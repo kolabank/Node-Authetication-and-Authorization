@@ -1,5 +1,5 @@
 body {
-    background-color: aqua;
+    background-color: rgb(1, 54, 132);
 }
 
 .spaceDiv {
@@ -21,4 +21,12 @@ body {
 #form {
     margin: auto;
     width: auto;
+}
+
+h1 {
+    color: white;
+}
+
+p {
+    color: white;
 }
