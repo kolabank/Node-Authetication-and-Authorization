@@ -4,6 +4,7 @@ const path = require("path");
 const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs')
+const bcrypt = require('bcrypt');
 
 
 const User = require("./models/user");
@@ -26,12 +27,15 @@ app.get("/", (req, res) => {
 })
 
 app.post("/login", async(req, res) => {
-    res.render('login')
-    const { username, email, password } = req.body;
-    console.log(`The username is ${username}, with email ${email}`)
 
-    const newUser = new User(req.body);
+    const { username, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 12)
+
+    const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
+
+    console.log(`The username is ${username}, with email ${email} and password ${hashedPassword}`)
+    res.render('login')
 
 })
 
