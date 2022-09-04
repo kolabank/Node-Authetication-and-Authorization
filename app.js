@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
     res.render('index')
 })
 
-app.post("/login", async(req, res) => {
+app.post("/signup", async(req, res) => {
 
     const { username, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 12)
@@ -35,8 +35,27 @@ app.post("/login", async(req, res) => {
     await newUser.save();
 
     console.log(`The username is ${username}, with email ${email} and password ${hashedPassword}`)
-    res.render('login')
+        // res.render('login')
+    res.redirect('/login')
 
+})
+
+app.post("/login", async(req, res) => {
+    const { username, password } = req.body;
+    const retrievedUser = await User.findOne({ username });
+    if (!retrievedUser) {
+        res.send("Login details are not correct");
+    } else {
+        const isPasswordMatch = await bcrypt.compare(password, retrievedUser.password);
+
+        if (isPasswordMatch) {
+            res.send("You are logged in");
+
+        } else {
+            res.send("Login details are not correct");
+
+        }
+    }
 })
 
 app.get("/welcome", (req, res) => {
