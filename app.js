@@ -5,12 +5,16 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs')
 const bcrypt = require('bcrypt');
-
-
 const User = require("./models/user");
+const loginRouter = require("./routes/login");
+
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }))
+
+app.use("/", loginRouter);
+
+
 
 mongoose.connect('mongodb://localhost:27017/user', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
@@ -23,48 +27,13 @@ mongoose.connect('mongodb://localhost:27017/user', { useNewUrlParser: true, useU
 
 
 app.get("/", (req, res) => {
-    res.render('index')
+    res.redirect('/signup')
 })
 
-app.post("/signup", async(req, res) => {
 
-    const { username, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 12)
-
-    const newUser = new User({ username, email, password: hashedPassword });
-    await newUser.save();
-
-    console.log(`The username is ${username}, with email ${email} and password ${hashedPassword}`)
-        // res.render('login')
-    res.redirect('/login')
-
-})
-
-app.post("/login", async(req, res) => {
-    const { username, password } = req.body;
-    const retrievedUser = await User.findOne({ username });
-    if (!retrievedUser) {
-        res.send("Login details are not correct");
-    } else {
-        const isPasswordMatch = await bcrypt.compare(password, retrievedUser.password);
-
-        if (isPasswordMatch) {
-            res.send("You are logged in");
-
-        } else {
-            res.send("Login details are not correct");
-
-        }
-    }
-})
 
 app.get("/welcome", (req, res) => {
     res.send("You are welcome to get response");
-
-})
-
-app.get("/login", (req, res) => {
-    res.render('login');
 
 })
 
