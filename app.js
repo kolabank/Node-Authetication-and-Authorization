@@ -7,12 +7,14 @@ app.set('view engine', 'ejs')
 const bcrypt = require('bcrypt');
 const User = require("./models/user");
 const loginRouter = require("./routes/login");
+const signupRouter = require("./routes/signup");
 
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }))
 
 app.use("/", loginRouter);
+app.use("/", signupRouter);
 
 
 
